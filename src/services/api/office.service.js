@@ -25,6 +25,22 @@ const OfficeService = {
     const { data } = await axios.post('/reports', application)
     return data
   },
+  getStatistics: async () => {
+    const { data } = await axios.get('/statistics')
+    return data
+  },
+  downloadReport: async () => {
+    const { data } = await axios.get('/getxlsx', {
+      responseType: 'blob',
+    })
+    const url = window.URL.createObjectURL(new Blob([data]))
+    const linkElement = document.createElement('a')
+    linkElement.href = url
+    linkElement.setAttribute('download', `Statistika.xlsx`)
+    document.body.appendChild(linkElement)
+    linkElement.click()
+    return new File([data], 'name')
+  },
 }
 
 export default OfficeService

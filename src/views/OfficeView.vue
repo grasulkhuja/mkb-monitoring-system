@@ -15,7 +15,7 @@
                       outlined
                       placeholder="Departmentni tanlang"
                       :items="departments"
-                      item-text="name"
+                      item-text="department_name"
                       item-value="id"
                     />
                   </v-card-text>
@@ -38,7 +38,7 @@
                       outlined
                       placeholder="Lavozimni tanlang"
                       :items="departmentPositions"
-                      item-text="name"
+                      item-text="position_name"
                       item-value="id"
                     />
                   </v-card-text>
@@ -57,22 +57,31 @@
 
               <v-stepper-content step="3">
                 <v-form @submit.prevent="sendApplication" v-model="valid" ref="form">
+                  <!--                  {{ completedTasks }}-->
                   <v-card flat>
                     <v-card-text>
-                      <v-row v-for="task in completedTasks" :key="task.id">
+                      <v-row v-for="(task, index) in completedTasks" :key="task.id">
                         <v-col cols="12" md="6">
                           <v-autocomplete
                             v-model="task.task_id"
                             :items="positionTasks"
                             :rules="requiredRules"
-                            item-text="name"
                             item-value="id"
+                            item-text="task_name"
                             outlined
                             dense
                             placeholder="Majburiyat nomi"
                             hint="Majburiyat nomini tanlang"
                             required
-                          />
+                          >
+                            <!--                            <template v-slot:item="data">-->
+                            <!--                              <v-list-item-content>-->
+                            <!--                                <v-list-item-title>-->
+                            <!--                                  {{ data.item.task_name }}-->
+                            <!--                                </v-list-item-title>-->
+                            <!--                              </v-list-item-content>-->
+                            <!--                            </template>-->
+                          </v-autocomplete>
                         </v-col>
                         <v-col cols="12" md="3">
                           <v-textarea
@@ -102,7 +111,7 @@
                         <v-col cols="12" md="1">
                           <v-btn
                             v-if="completedTasks.length > 1"
-                            @click.prevent="removeTask(task)"
+                            @click.prevent="removeTask(index)"
                             icon
                             color="error"
                             class="ml-5"
@@ -153,7 +162,8 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-snackbar v-model="status" :type="status">
+    {{ status }}
+    <v-snackbar v-model="showSnackbar" :color="status">
       {{ message }}
     </v-snackbar>
   </v-container>
@@ -171,7 +181,7 @@ export default {
       position: null,
       completedTasks: [{ task_id: null, result: null, time: null }],
       requiredRules: [(v) => !!v || "To'ldirilishi kerak"],
-      status: null,
+      showSnackbar: null,
       message: null,
     }
   },
@@ -201,6 +211,11 @@ export default {
   },
   computed: {
     ...mapGetters('office', ['departments', 'departmentPositions', 'positionTasks']),
+    // selectableTasks(item) {
+    //   return this.positionTasks.filter((task) => {
+    //     return !this.completedTasks.some((completedTask) => completedTask.task_id === task.id)
+    //   })
+    // },
   },
   created() {
     this.$store.dispatch('office/fetchDepartments', {
@@ -208,6 +223,9 @@ export default {
     })
   },
   methods: {
+    selectableTasks(item) {
+      console.log(item)
+    },
     sendApplication() {
       this.$store
         .dispatch('office/sendApplication', {
@@ -215,10 +233,16 @@ export default {
         })
         .then((response) => {
           if (response.result === 'OK') {
+            this.showSnackbar = true
             this.status = 'success'
             this.message = "Ariza muvaffaqiyatli jo'natildi"
             this.$refs.form.reset()
           }
+        })
+        .catch(() => {
+          this.showSnackbar = true
+          this.status = 'error'
+          this.message = "Ariza jo'natishda xatolik yuz berdi"
         })
     },
     addTask() {
@@ -237,8 +261,8 @@ export default {
       this.position = null
       this.step = 2
     },
-    removeTask(task) {
-      this.completedTasks = this.completedTasks.splice(this.completedTasks.indexOf(task), 1)
+    removeTask(index) {
+      this.completedTasks.splice(index, 1)
     },
   },
 }

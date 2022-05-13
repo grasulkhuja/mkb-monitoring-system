@@ -16,6 +16,16 @@ const routes = [
     },
   },
   {
+    path: '/reports',
+    name: 'reports',
+    component: () => import('@/views/ReportsView.vue'),
+    meta: {
+      title: 'ReportsView',
+      layout: 'content',
+      requiresAuth: true,
+    },
+  },
+  {
     path: '/office',
     name: 'office',
     component: () => import('@/views/OfficeView.vue'),

@@ -7,6 +7,7 @@ export const state = {
   departments: [],
   departmentPositions: [],
   positionTasks: [],
+  statistics: [],
 }
 export const mutations = {
   SET_OFFICE_TYPE(state, officeType) {
@@ -20,6 +21,9 @@ export const mutations = {
   },
   SET_POSITION_TASKS(state, tasks) {
     state.positionTasks = tasks
+  },
+  SET_STATISTICS(state, statistics) {
+    state.statistics = statistics
   },
 }
 export const actions = {
@@ -38,9 +42,17 @@ export const actions = {
   sendApplication: async (context, { tasks }) => {
     return await OfficeService.sendApplication(tasks)
   },
+  fetchStatistics: async ({ commit }) => {
+    const statistics = await OfficeService.getStatistics()
+    commit('SET_STATISTICS', statistics)
+  },
+  downloadReport: async () => {
+    return await OfficeService.downloadReport()
+  },
 }
 export const getters = {
   departments: (state) => state.departments,
   departmentPositions: (state) => state.departmentPositions,
   positionTasks: (state) => state.positionTasks,
+  statistics: (state) => state.statistics,
 }

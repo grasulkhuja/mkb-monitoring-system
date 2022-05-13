@@ -28,7 +28,6 @@
             <v-text-field
               v-model="username"
               outlined
-              label="Username"
               placeholder="Username"
               hide-details
               class="mb-3"
@@ -38,7 +37,6 @@
               v-model="password"
               outlined
               :type="isPasswordVisible ? 'text' : 'password'"
-              label="Password"
               placeholder="············"
               :append-icon="isPasswordVisible ? icons.mdiEyeOffOutline : icons.mdiEyeOutline"
               hide-details
@@ -88,11 +86,9 @@ export default {
           this.errorMessage = e.response.data.detail
         })
         .then((response) => {
-          console.log(response)
           useJwt.setToken(response.data.token)
-        })
-        .then(() => {
-          this.$router.push({ name: 'home' })
+          if (response.data.user_type === 1) this.$router.push({ name: 'reports' })
+          else this.$router.push({ name: 'home' })
         })
     },
   },
