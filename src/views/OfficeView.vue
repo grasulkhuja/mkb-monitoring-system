@@ -237,6 +237,7 @@ export default {
             this.status = 'success'
             this.message = "Ariza muvaffaqiyatli jo'natildi"
             this.$refs.form.reset()
+            location.reload()
           }
         })
         .catch(() => {
