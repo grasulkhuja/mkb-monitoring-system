@@ -162,7 +162,6 @@
         </v-card>
       </v-col>
     </v-row>
-    {{ status }}
     <v-snackbar v-model="showSnackbar" :color="status">
       {{ message }}
     </v-snackbar>
@@ -237,7 +236,9 @@ export default {
             this.status = 'success'
             this.message = "Ariza muvaffaqiyatli jo'natildi"
             this.$refs.form.reset()
-            location.reload()
+            setTimeout(() => {
+              location.reload()
+            }, 1500)
           }
         })
         .catch(() => {
