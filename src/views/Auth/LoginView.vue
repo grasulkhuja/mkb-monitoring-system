@@ -43,8 +43,8 @@
               @click:append="isPasswordVisible = !isPasswordVisible"
             />
 
-            <v-alert v-model="errorMessage" type="error" outlined class="my-4">
-              {{ 'Oops! Something went wrong' }}
+            <v-alert v-model="e" type="error" outlined class="my-4">
+              {{ errorMessage }}
             </v-alert>
             <v-btn block type="submit" color="primary" class="mt-6"> Kirish </v-btn>
           </v-form>
@@ -88,7 +88,7 @@ export default {
         .then((response) => {
           useJwt.setToken(response.data.token)
           if (response.data.user_type === 1) this.$router.push({ name: 'reports' })
-          else this.$router.push({ name: 'home' })
+          else this.$router.push({ name: 'reports-add' })
         })
     },
   },
@@ -96,11 +96,13 @@ export default {
     const isPasswordVisible = ref(false)
     const username = ref('')
     const password = ref('')
-    const errorMessage = ref(null)
+    const e = ref(null)
+    const errorMessage = ref('')
     return {
       isPasswordVisible,
       username,
       password,
+      e,
       errorMessage,
 
       icons: {

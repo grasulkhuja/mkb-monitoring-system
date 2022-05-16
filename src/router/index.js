@@ -16,11 +16,21 @@ const routes = [
     },
   },
   {
-    path: '/reports',
-    name: 'reports',
-    component: () => import('@/views/ReportsView.vue'),
+    path: '/reports/add',
+    name: 'reports-add',
+    component: () => import('@/views/reports/AddReportView.vue'),
     meta: {
-      title: 'ReportsView',
+      title: 'Add Report',
+      layout: 'content',
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/reports/list',
+    name: 'reports-list',
+    component: () => import('@/views/reports/ReportsListView.vue'),
+    meta: {
+      title: 'ReportsListView',
       layout: 'content',
       requiresAuth: true,
     },

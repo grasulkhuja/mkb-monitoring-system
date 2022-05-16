@@ -64,7 +64,7 @@ export default {
 }
 
 .boxed-container {
-  max-width: 1440px;
+  max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
 }

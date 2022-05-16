@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
         <v-card flat color="grey lighten-4">
@@ -57,8 +57,38 @@
 
               <v-stepper-content step="3">
                 <v-form @submit.prevent="sendApplication" v-model="valid" ref="form">
-                  <!--                  {{ completedTasks }}-->
                   <v-card flat>
+                    <v-card-text>
+                      <v-spacer />
+                      <v-col cols="12" sm="6" md="4">
+                        <v-menu
+                          v-model="dateMenu"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          transition="scale-transition"
+                          offset-y
+                          min-width="auto"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="date"
+                              label="Sanani tanlang"
+                              prepend-icon="mdi-calendar"
+                              readonly
+                              outlined
+                              dense
+                              v-bind="attrs"
+                              v-on="on"
+                            />
+                          </template>
+                          <v-date-picker
+                            v-model="date"
+                            @input="dateMenu = false"
+                            :first-day-of-week="1"
+                          />
+                        </v-menu>
+                      </v-col>
+                    </v-card-text>
                     <v-card-text>
                       <v-row v-for="(task, index) in completedTasks" :key="task.id">
                         <v-col cols="12" md="6">
@@ -74,48 +104,60 @@
                             hint="Majburiyat nomini tanlang"
                             required
                           >
-                            <!--                            <template v-slot:item="data">-->
-                            <!--                              <v-list-item-content>-->
-                            <!--                                <v-list-item-title>-->
-                            <!--                                  {{ data.item.task_name }}-->
-                            <!--                                </v-list-item-title>-->
-                            <!--                              </v-list-item-content>-->
-                            <!--                            </template>-->
                           </v-autocomplete>
                         </v-col>
-                        <v-col cols="12" md="3">
-                          <v-textarea
-                            v-model="task.result"
+                        <v-col cols="12" md="1">
+                          <v-text-field
+                            v-model="task.quantity"
                             :rules="requiredRules"
+                            type="number"
                             outlined
                             dense
-                            placeholder="Qo'shimcha ma'lumot"
-                            hint="Qo'shimcha ma'lumotni kiriting"
+                            placeholder="Soni"
+                            hint="Sonini kiriting"
                             required
                             rows="1"
                             auto-grow
                           />
                         </v-col>
-                        <v-col cols="12" md="2">
+                        <v-col cols="12" md="1">
                           <v-text-field
                             type="number"
-                            v-model="task.time"
-                            :rules="requiredRules"
+                            v-model="task.hour"
+                            :rules="hourRules"
                             outlined
                             dense
-                            placeholder="Sarflangan vaqt"
-                            hint="Sarflangan vaqtini kiriting"
+                            placeholder="Soat"
+                            hint=""
                             required
                           />
                         </v-col>
                         <v-col cols="12" md="1">
-                          <v-btn
-                            v-if="completedTasks.length > 1"
-                            @click.prevent="removeTask(index)"
-                            icon
-                            color="error"
-                            class="ml-5"
-                          >
+                          <v-text-field
+                            type="number"
+                            v-model="task.minute"
+                            :rules="minuteRules"
+                            outlined
+                            dense
+                            placeholder="Daqiqa"
+                            hint=""
+                            required
+                          />
+                        </v-col>
+                        <v-col cols="12" :md="completedTasks.length > 1 ? 2 : 3">
+                          <v-textarea
+                            v-model="task.comment"
+                            rows="1"
+                            outlined
+                            dense
+                            placeholder="Qo'shimcha ma'lumot"
+                            hint="Qo'shimcha ma'lumot"
+                            auto-grow
+                            counter="50"
+                          />
+                        </v-col>
+                        <v-col v-if="completedTasks.length > 1" cols="12" md="1">
+                          <v-btn @click.prevent="removeTask(index)" icon color="error" class="ml-5">
                             <v-icon>mdi-close</v-icon>
                           </v-btn>
                         </v-col>
@@ -134,6 +176,13 @@
                         </v-col>
                       </v-row>
                     </v-card-text>
+                    <v-card-actions>
+                      <v-spacer />
+                      <p>
+                        <span>Umumiy sarflangan vaqt: </span>{{ totalSpentTime.days }} kun,
+                        {{ totalSpentTime.hours }} soat, {{ totalSpentTime.minutes }} daqiqa
+                      </p>
+                    </v-card-actions>
                     <v-card-actions>
                       <v-spacer />
                       <v-btn
@@ -178,10 +227,31 @@ export default {
       step: 1,
       department: null,
       position: null,
-      completedTasks: [{ task_id: null, result: null, time: null }],
+      dateMenu: false,
+      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      completedTasks: [
+        {
+          task_id: null,
+          quantity: null,
+          hour: null,
+          minute: null,
+          comment: null,
+        },
+      ],
       requiredRules: [(v) => !!v || "To'ldirilishi kerak"],
+      hourRules: [
+        (v) => !!v || "To'ldirilishi kerak",
+        (v) => (v >= 0 && v <= 23) || "Noto'g'ri kiritildi (0-23)",
+      ],
+      minuteRules: [
+        (v) => !!v || "To'ldirilishi kerak",
+        (v) => (v >= 0 && v <= 59) || "Noto'g'ri kiritildi (0-59)",
+      ],
       showSnackbar: null,
       message: null,
+      status: null,
     }
   },
   watch: {
@@ -215,6 +285,17 @@ export default {
     //     return !this.completedTasks.some((completedTask) => completedTask.task_id === task.id)
     //   })
     // },
+    totalSpentTime() {
+      let total = this.completedTasks.reduce((acc, task) => {
+        return acc + Number(task.hour) * 60 + Number(task.minute)
+      }, 0)
+      const days = Math.floor(total / (60 * 24))
+      total -= days * (60 * 24)
+      const hours = Math.floor(total / 60)
+      total -= hours * 60
+      const minutes = total
+      return { days, hours, minutes }
+    },
   },
   created() {
     this.$store.dispatch('office/fetchDepartments', {
@@ -222,9 +303,6 @@ export default {
     })
   },
   methods: {
-    selectableTasks(item) {
-      console.log(item)
-    },
     sendApplication() {
       this.$store
         .dispatch('office/sendApplication', {
@@ -248,7 +326,13 @@ export default {
         })
     },
     addTask() {
-      this.completedTasks.push({ task_id: null, result: null, time: null })
+      this.completedTasks.push({
+        task_id: null,
+        quantity: null,
+        hour: null,
+        minute: null,
+        comment: null,
+      })
     },
     backToChooseOfficeType() {
       location.reload()
@@ -258,7 +342,15 @@ export default {
       this.step = 1
     },
     backToChoosePosition() {
-      this.completedTasks = [{ task_id: null, result: null, time: null }]
+      this.completedTasks = [
+        {
+          task_id: null,
+          quantity: null,
+          hour: null,
+          minute: null,
+          comment: null,
+        },
+      ]
       this.$refs.form.reset()
       this.position = null
       this.step = 2
@@ -266,6 +358,9 @@ export default {
     removeTask(index) {
       this.completedTasks.splice(index, 1)
     },
+  },
+  beforeDestroy() {
+    clearTimeout()
   },
 }
 </script>
