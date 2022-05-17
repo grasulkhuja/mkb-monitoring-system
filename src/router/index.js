@@ -14,6 +14,9 @@ const routes = [
       layout: 'content',
       requiresAuth: true,
     },
+    redirect: {
+      name: 'reports-add',
+    },
   },
   {
     path: '/reports/add',
