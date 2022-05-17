@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from '@/store'
+// import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -35,48 +35,48 @@ const routes = [
       requiresAuth: true,
     },
   },
-  {
-    path: '/office',
-    name: 'office',
-    component: () => import('@/views/OfficeView.vue'),
-    meta: {
-      title: 'Office',
-      layout: 'content',
-      requiresAuth: true,
-    },
-    beforeEnter(to, from, next) {
-      if (!store.state.office.officeType) return next({ name: 'home' })
-      return next()
-    },
-  },
-  {
-    path: '/front-office',
-    name: 'front-office',
-    component: () => import('@/views/FrontOfficeView.vue'),
-    meta: {
-      title: 'Front Office',
-      layout: 'content',
-      requiresAuth: true,
-    },
-    beforeEnter(to, from, next) {
-      if (!store.state.office.officeType) return next({ name: 'home' })
-      return next()
-    },
-  },
-  {
-    path: '/back-office',
-    name: 'back-office',
-    component: () => import('@/views/BackOfficeView.vue'),
-    meta: {
-      title: 'Back Office',
-      layout: 'content',
-      requiresAuth: true,
-    },
-    beforeEnter(to, from, next) {
-      if (!store.state.office.officeType) return next({ name: 'home' })
-      return next()
-    },
-  },
+  // {
+  //   path: '/office',
+  //   name: 'office',
+  //   component: () => import('@/views/OfficeView.vue'),
+  //   meta: {
+  //     title: 'Office',
+  //     layout: 'content',
+  //     requiresAuth: true,
+  //   },
+  //   beforeEnter(to, from, next) {
+  //     if (!store.state.office.officeType) return next({ name: 'home' })
+  //     return next()
+  //   },
+  // },
+  // {
+  //   path: '/front-office',
+  //   name: 'front-office',
+  //   component: () => import('@/views/FrontOfficeView.vue'),
+  //   meta: {
+  //     title: 'Front Office',
+  //     layout: 'content',
+  //     requiresAuth: true,
+  //   },
+  //   beforeEnter(to, from, next) {
+  //     if (!store.state.office.officeType) return next({ name: 'home' })
+  //     return next()
+  //   },
+  // },
+  // {
+  //   path: '/back-office',
+  //   name: 'back-office',
+  //   component: () => import('@/views/BackOfficeView.vue'),
+  //   meta: {
+  //     title: 'Back Office',
+  //     layout: 'content',
+  //     requiresAuth: true,
+  //   },
+  //   beforeEnter(to, from, next) {
+  //     if (!store.state.office.officeType) return next({ name: 'home' })
+  //     return next()
+  //   },
+  // },
   {
     path: '/auth-login',
     name: 'auth-login',

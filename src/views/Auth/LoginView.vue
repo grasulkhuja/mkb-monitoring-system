@@ -16,10 +16,8 @@
 
         <!-- title -->
         <v-card-text>
-          <p class="text-2xl font-weight-semibold text--primary mb-2">
-            Welcome to MKB monitoring system! 👋🏻
-          </p>
-          <p class="mb-2">Please sign-in to your account and start the adventure</p>
+          <p class="text-2xl font-weight-semibold text--primary mb-2 text-center">Xush kelibsiz!</p>
+          <!--          <p class="mb-2">Please sign-in to your account and start the adventure</p>-->
         </v-card-text>
 
         <!-- login form -->
@@ -28,7 +26,7 @@
             <v-text-field
               v-model="username"
               outlined
-              placeholder="Username"
+              placeholder="Login"
               hide-details
               class="mb-3"
             />
@@ -37,7 +35,7 @@
               v-model="password"
               outlined
               :type="isPasswordVisible ? 'text' : 'password'"
-              placeholder="············"
+              placeholder="Parol"
               :append-icon="isPasswordVisible ? icons.mdiEyeOffOutline : icons.mdiEyeOutline"
               hide-details
               @click:append="isPasswordVisible = !isPasswordVisible"
@@ -87,7 +85,7 @@ export default {
         })
         .then((response) => {
           useJwt.setToken(response.data.token)
-          if (response.data.user_type === 1) this.$router.push({ name: 'reports' })
+          if (response.data.user_type === 1) this.$router.push({ name: 'reports-list' })
           else this.$router.push({ name: 'reports-add' })
         })
     },

@@ -21,8 +21,11 @@ const OfficeService = {
     const { data } = await axios.get(`/tasks/${positionId}`)
     return data
   },
-  sendApplication: async (application) => {
-    const { data } = await axios.post('/reports', application)
+  sendApplication: async (date, application) => {
+    const { data } = await axios.post('/reports', {
+      date,
+      application,
+    })
     return data
   },
   getStatistics: async () => {

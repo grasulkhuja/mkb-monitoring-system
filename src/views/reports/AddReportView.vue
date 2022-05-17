@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <v-card v-if="user.length" class="mb-2">
+        <v-card v-if="user" class="mb-2">
           <v-card-title>
             <span class="headline font-weight-black">Foydalanuvchi ma'lumotlari</span>
           </v-card-title>
@@ -12,8 +12,8 @@
             </p>
             <p class="text-h6">
               <span class="font-weight-bold">Ishlash joyi: </span>
-              <span>{{ user[0].branch_name }}, </span>
-              <span>{{ user[0].structure_name }}, </span>
+              <span>{{ user[0].branch_name }}. </span>
+              <span>{{ user[0].structure_name }} - </span>
               <span>{{ user[0].position_name }}</span>
             </p>
           </v-card-text>
@@ -50,7 +50,7 @@
                 </v-menu>
               </v-col>
             </v-row>
-            <v-form @submit.prevent="sendApplication" v-model="valid" ref="form" v-if="user.length">
+            <v-form @submit.prevent="sendApplication" v-model="valid" ref="form" v-if="user">
               <v-card flat>
                 <v-card-text>
                   <v-row v-for="(task, index) in completedTasks" :key="task.id">
@@ -114,7 +114,7 @@
                         placeholder="Qo'shimcha ma'lumot"
                         hint="Qo'shimcha ma'lumot"
                         auto-grow
-                        counter="50"
+                        counter="100"
                       />
                     </v-col>
                     <v-col v-if="completedTasks.length > 1" cols="12" md="1">
@@ -187,7 +187,7 @@ export default {
           quantity: null,
           hour: null,
           minute: null,
-          comment: null,
+          comment: '',
         },
       ],
       requiredRules: [(v) => !!v || "To'ldirilishi kerak"],
@@ -223,6 +223,7 @@ export default {
     sendApplication() {
       this.$store
         .dispatch('office/sendApplication', {
+          date: this.date,
           tasks: this.completedTasks,
         })
         .then((response) => {
@@ -230,10 +231,16 @@ export default {
             this.showSnackbar = true
             this.status = 'success'
             this.message = "Ariza muvaffaqiyatli jo'natildi"
+            this.completedTasks = [
+              {
+                task_id: null,
+                quantity: null,
+                hour: null,
+                minute: null,
+                comment: '',
+              },
+            ]
             this.$refs.form.reset()
-            setTimeout(() => {
-              location.reload()
-            }, 1500)
           }
         })
         .catch(() => {
@@ -248,7 +255,7 @@ export default {
         quantity: null,
         hour: null,
         minute: null,
-        comment: null,
+        comment: '',
       })
     },
     removeTask(index) {
@@ -257,9 +264,6 @@ export default {
   },
   created() {
     this.$store.dispatch('auth/fetchUserData')
-  },
-  beforeDestroy() {
-    clearTimeout()
   },
 }
 </script>

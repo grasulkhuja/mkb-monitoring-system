@@ -17,8 +17,8 @@
           </v-card-title>
           <v-card-text>
             <v-data-table :headers="reportsTableHeaders" :items="statistics" :search="search">
-              <template v-slot:[`item.timestamp`]="{ item }">
-                {{ new Date(item.timestamp).toLocaleString() }}
+              <template v-slot:[`item.created_at`]="{ item }">
+                {{ new Date(item.created_at).toLocaleString() }}
               </template>
             </v-data-table>
           </v-card-text>
@@ -57,13 +57,16 @@ export default {
       search: null,
       reportsTableHeaders: [
         { text: '#', value: 'id', divider: true },
-        { text: 'Hodim', value: 'username', divider: true },
-        { text: 'Departament', value: 'department_name', divider: true },
+        { text: 'Hodim', value: 'full_name', divider: true },
+        { text: 'Struktura', value: 'structure_name', divider: true },
+        // { text: 'Departament', value: 'department_name', divider: true },
         { text: 'Lavozim', value: 'position_name', divider: true },
         { text: 'Faoliyat turi', value: 'task_name', divider: true },
-        { text: 'Natija', value: 'result', divider: true },
-        { text: 'Sarflagan vaqti', value: 'time', divider: true },
-        { text: 'Qo`shilgan sanasi', value: 'timestamp', divider: true },
+        { text: 'Soni', value: 'quantity', divider: true },
+        { text: 'Sarflagan vaqti (daqiqa)', value: 'time', divider: true },
+        { text: "Qo'shimcha ma'lumot", value: 'comment', divider: true },
+        { text: 'Hisobot sanasi', value: 'added_date', divider: true },
+        { text: 'Hisobot yuborilgan sana', value: 'created_at', divider: true },
       ],
     }
   },

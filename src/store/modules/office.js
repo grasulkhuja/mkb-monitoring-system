@@ -39,8 +39,8 @@ export const actions = {
     const tasks = await OfficeService.getPositionTasks(positionId)
     commit('SET_POSITION_TASKS', tasks)
   },
-  sendApplication: async (context, { tasks }) => {
-    return await OfficeService.sendApplication(tasks)
+  sendApplication: async (context, { date, tasks }) => {
+    return await OfficeService.sendApplication(date, tasks)
   },
   fetchStatistics: async ({ commit }) => {
     const statistics = await OfficeService.getStatistics()
